@@ -70,38 +70,6 @@ All user funds are held in per-user Solana PDAs. Withdrawals require FROST thres
 
 ---
 
-## SDK Quick Start
-
-```typescript
-import { BulkClient } from "@bulk-trade/sdk";
-
-// Connect to BULK Exchange
-const client = new BulkClient({
-  endpoint: "https://api.bulk.trade",
-  wallet: yourSolanaWallet,
-});
-
-// Fetch available markets
-const markets = await client.getMarkets();
-
-// Place a limit order
-const order = await client.placeOrder({
-  market: "BTC-PERP",
-  side: "buy",
-  orderType: "limit",
-  price: 95000,
-  size: 0.1,
-  postOnly: true, // ALO — maker-only, 0 bps during Genesis Phase
-});
-
-// Fetch open positions
-const positions = await client.getPositions();
-```
-
-Full SDK documentation: [builtonbulk.xyz/bulk-sdk-guide](https://builtonbulk.xyz/bulk-sdk-guide)
-
----
-
 ## Key Resources
 
 | Resource | URL |
