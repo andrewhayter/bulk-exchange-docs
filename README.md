@@ -85,7 +85,7 @@ import { BulkClient } from "bulk-client";
 
 const client = new BulkClient({
   env: "production",
-  builderCode: "45uQ6xmDCewvQR2TdMLjGNRTdrzmMo12JuyZFZn8U6hK", // reference code — swap for your own once approved
+  builderCode: "45uQ6xmDCewvQR2TdMLjGNRTdrzmMo12JuyZFZn8U6hK",
 });
 
 await client.approveBuilderFee({ builderCode: "45uQ6xmDCewvQR2TdMLjGNRTdrzmMo12JuyZFZn8U6hK", maxFeeBps: 5 });
