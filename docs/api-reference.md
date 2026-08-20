@@ -1,6 +1,7 @@
 # BULK Exchange API Reference
 
 Community reference compiled from official sources:
+
 - [docs.bulk.trade/api-reference](https://docs.bulk.trade/api-reference/introduction)
 - [github.com/Bulk-trade/bulk-keychain](https://github.com/Bulk-trade/bulk-keychain)
 - [github.com/Bulk-trade/bulk-client](https://github.com/Bulk-trade/bulk-client)
@@ -11,10 +12,10 @@ Community reference compiled from official sources:
 
 ## Base URLs
 
-| Environment | HTTP REST | WebSocket |
-|-------------|-----------|-----------|
-| Staging | `https://staging-api.bulk.trade/api/v1` | `wss://staging-ws.bulk.trade` |
-| Production | `https://exchange-api.bulk.trade/api/v1` | `wss://exchange-ws1.bulk.trade` |
+| Environment | HTTP REST                                | WebSocket                       |
+| ----------- | ---------------------------------------- | ------------------------------- |
+| Staging     | `https://staging-api.bulk.trade/api/v1`  | `wss://staging-ws.bulk.trade`   |
+| Production  | `https://exchange-api.bulk.trade/api/v1` | `wss://exchange-ws1.bulk.trade` |
 
 > Production endpoints may be paused during trading competitions. Check [docs.bulk.trade](https://docs.bulk.trade) for current status.
 
@@ -22,13 +23,13 @@ Community reference compiled from official sources:
 
 ## Authentication
 
-| Endpoint category | Auth required |
-|-------------------|---------------|
-| Market Data (HTTP) | None |
-| Account queries (HTTP) | None |
-| Trading (HTTP) | Ed25519 signature via [bulk-keychain](https://github.com/Bulk-trade/bulk-keychain) |
-| WebSocket market data | None |
-| WebSocket account stream | None (public key in subscription) |
+| Endpoint category        | Auth required                                                                      |
+| ------------------------ | ---------------------------------------------------------------------------------- |
+| Market Data (HTTP)       | None                                                                               |
+| Account queries (HTTP)   | None                                                                               |
+| Trading (HTTP)           | Ed25519 signature via [bulk-keychain](https://github.com/Bulk-trade/bulk-keychain) |
+| WebSocket market data    | None                                                                               |
+| WebSocket account stream | None (public key in subscription)                                                  |
 
 ---
 
@@ -75,13 +76,13 @@ When using an agent wallet: `account` = user pubkey, `signer` = agent pubkey. Th
 
 ### Field encoding
 
-| Field type | Encoding |
-|-----------|---------|
-| Price, size, trigger price (`px`, `sz`, `tr`, `pmin`, `pmax`, `lim`) | `round(value × 1e8)` as u64 LE |
-| Raw float fields (`mod.sz`, `faucet.amount`, `transfer.marginAmount`) | IEEE-754 double, 8 bytes LE |
-| Enum variants | u32 LE discriminant |
-| Pubkeys / hashes | 32 raw bytes |
-| Strings | u64 LE length + UTF-8 bytes |
+| Field type                                                            | Encoding                       |
+| --------------------------------------------------------------------- | ------------------------------ |
+| Price, size, trigger price (`px`, `sz`, `tr`, `pmin`, `pmax`, `lim`)  | `round(value × 1e8)` as u64 LE |
+| Raw float fields (`mod.sz`, `faucet.amount`, `transfer.marginAmount`) | IEEE-754 double, 8 bytes LE    |
+| Enum variants                                                         | u32 LE discriminant            |
+| Pubkeys / hashes                                                      | 32 raw bytes                   |
+| Strings                                                               | u64 LE length + UTF-8 bytes    |
 
 ---
 
@@ -92,6 +93,7 @@ When using an agent wallet: `account` = user pubkey, `signer` = agent pubkey. Th
 Returns all available markets.
 
 **Response:**
+
 ```json
 [
   {
@@ -105,8 +107,8 @@ Returns all available markets.
     "lotSize": 0.0001,
     "minNotional": 10,
     "maxLeverage": 50,
-    "orderTypes": ["LIMIT","MARKET","STOP","STOP_LIMIT","TAKE_PROFIT","RANGE","TRIGGER","TRAILING"],
-    "timeInForces": ["GTC","IOC","ALO"]
+    "orderTypes": ["LIMIT", "MARKET", "STOP", "STOP_LIMIT", "TAKE_PROFIT", "RANGE", "TRIGGER", "TRAILING"],
+    "timeInForces": ["GTC", "IOC", "ALO"]
   }
 ]
 ```
@@ -120,6 +122,7 @@ Returns all available markets.
 **Path parameter:** `symbol` e.g. `BTC-USD`
 
 **Response fields:**
+
 ```
 symbol, priceChange, priceChangePercent, lastPrice, highPrice, lowPrice,
 volume, quoteVolume, markPrice, oraclePrice, openInterest, fundingRate,
@@ -136,14 +139,15 @@ OHLCV candle data.
 
 **Query parameters:**
 
-| Parameter | Required | Description |
-|-----------|----------|-------------|
-| `symbol` | Yes | e.g. `BTC-USD` |
-| `interval` | Yes | `10s\|1m\|3m\|5m\|15m\|30m\|1h\|2h\|4h\|6h\|8h\|12h\|1d\|3d\|1w\|1M` |
-| `startTime` | No | int64 milliseconds |
-| `endTime` | No | int64 milliseconds |
+| Parameter   | Required | Description                                                          |
+| ----------- | -------- | -------------------------------------------------------------------- |
+| `symbol`    | Yes      | e.g. `BTC-USD`                                                       |
+| `interval`  | Yes      | `10s\|1m\|3m\|5m\|15m\|30m\|1h\|2h\|4h\|6h\|8h\|12h\|1d\|3d\|1w\|1M` |
+| `startTime` | No       | int64 milliseconds                                                   |
+| `endTime`   | No       | int64 milliseconds                                                   |
 
 **Response:**
+
 ```json
 [
   {
@@ -167,22 +171,20 @@ L2 order book snapshot.
 
 **Query parameters:**
 
-| Parameter | Required | Description |
-|-----------|----------|-------------|
-| `type` | Yes | Must be `"l2book"` |
-| `coin` | Yes | Market symbol e.g. `BTC-USD` |
-| `nlevels` | No | Price levels per side (integer) |
-| `aggregation` | No | Price increment in quote currency |
+| Parameter     | Required | Description                       |
+| ------------- | -------- | --------------------------------- |
+| `type`        | Yes      | Must be `"l2book"`                |
+| `coin`        | Yes      | Market symbol e.g. `BTC-USD`      |
+| `nlevels`     | No       | Price levels per side (integer)   |
+| `aggregation` | No       | Price increment in quote currency |
 
 **Response:**
+
 ```json
 {
   "updateType": "snapshot",
   "symbol": "BTC-USD",
-  "levels": [
-    [{ "px": 68000.0, "sz": 1.5, "n": 3 }],
-    [{ "px": 68100.0, "sz": 0.8, "n": 2 }]
-  ],
+  "levels": [[{ "px": 68000.0, "sz": 1.5, "n": 3 }], [{ "px": 68100.0, "sz": 0.8, "n": 2 }]],
   "timestamp": 1717300800000
 }
 ```
@@ -195,12 +197,13 @@ Exchange-wide statistics.
 
 **Query parameters:**
 
-| Parameter | Required | Description |
-|-----------|----------|-------------|
-| `period` | No | `1d\|7d\|30d\|90d\|1y\|all` (default `1d`) |
-| `symbol` | No | Omit for aggregate |
+| Parameter | Required | Description                                |
+| --------- | -------- | ------------------------------------------ |
+| `period`  | No       | `1d\|7d\|30d\|90d\|1y\|all` (default `1d`) |
+| `symbol`  | No       | Omit for aggregate                         |
 
 **Response:**
+
 ```json
 {
   "timestamp": 1717300800000,
@@ -252,6 +255,7 @@ Current fee policy state. No parameters. No auth required.
 Read-only account data. No signing required.
 
 **Request body:**
+
 ```json
 {
   "type": "fullAccount|openOrders|fills|positions|fundingHistory|orderHistory|activityHistory|riskHistory|feeTier",
@@ -262,17 +266,17 @@ Read-only account data. No signing required.
 
 **Type options:**
 
-| Type | Returns |
-|------|---------|
-| `fullAccount` | Complete account state — margin, positions, orders, leverage |
-| `openOrders` | Up to 5,000 resting live orders |
-| `fills` | Up to 5,000 recent trade fills |
-| `positions` | Up to 5,000 closed position history with P&L |
-| `fundingHistory` | Up to 5,000 funding payments |
-| `orderHistory` | Up to 5,000 terminal order records |
-| `activityHistory` | Up to 5,000 account activity events |
-| `riskHistory` | Up to 5,000 liquidation / ADL events |
-| `feeTier` | Fee tier snapshot for a symbol |
+| Type              | Returns                                                      |
+| ----------------- | ------------------------------------------------------------ |
+| `fullAccount`     | Complete account state — margin, positions, orders, leverage |
+| `openOrders`      | Up to 5,000 resting live orders                              |
+| `fills`           | Up to 5,000 recent trade fills                               |
+| `positions`       | Up to 5,000 closed position history with P&L                 |
+| `fundingHistory`  | Up to 5,000 funding payments                                 |
+| `orderHistory`    | Up to 5,000 terminal order records                           |
+| `activityHistory` | Up to 5,000 account activity events                          |
+| `riskHistory`     | Up to 5,000 liquidation / ADL events                         |
+| `feeTier`         | Fee tier snapshot for a symbol                               |
 
 ---
 
@@ -283,6 +287,7 @@ Read-only account data. No signing required.
 Place, cancel, or modify orders. Requires Ed25519 signature.
 
 **Request body:**
+
 ```json
 {
   "actions": [ ... ],
@@ -296,22 +301,44 @@ Place, cancel, or modify orders. Requires Ed25519 signature.
 ### Action types
 
 **Limit order:**
+
 ```json
 { "l": { "c": "BTC-USD", "b": true, "px": 68000, "sz": 0.1, "tif": "GTC", "r": false, "i": false } }
 ```
-- `c` = symbol, `b` = isBuy, `px` = price, `sz` = size, `tif` = GTC|IOC|ALO, `r` = reduceOnly, `i` = isolated
+
+- `c` = symbol, `b` = isBuy, `px` = price, `sz` = size, `tif` = GTC|IOC|ALO, `r` = reduceOnly, `i` = isolated (routes to a per-instrument isolated margin account — see [margin.md](./margin.md))
+
+### Builder Codes
+
+Orders routed on behalf of a user by a third-party integration can carry a builder code, attributing a user-approved fee to the builder on top of the user's standard fee tier. No separate endpoint — the code attaches to the same signed order payload above. Full mechanism, SDK quick start, and use-case examples in [builder-codes.md](./builder-codes.md); raw protocol field naming should be confirmed against [docs.bulk.trade/bulk-exchange/builder-codes](https://docs.bulk.trade/bulk-exchange/builder-codes) before shipping to production.
+
+Via `bulk-client`, the builder code is set once on the client and applies to every order it submits — no per-order field to manage by hand:
+
+```typescript
+import { BulkClient } from "bulk-client";
+
+const client = new BulkClient({
+  env: "production",
+  builderCode: "45uQ6xmDCewvQR2TdMLjGNRTdrzmMo12JuyZFZn8U6hK",
+});
+
+await client.placeOrder({ symbol: "BTC-USD", side: "buy", type: "limit", price: 68000, size: 0.1, tif: "GTC" });
+```
 
 **Market order:**
+
 ```json
 { "m": { "c": "BTC-USD", "b": true, "sz": 0.1, "r": false, "i": false } }
 ```
 
 **Cancel single order:**
+
 ```json
 { "cx": { "c": "BTC-USD", "oid": "<order_id_base58>" } }
 ```
 
 **Cancel all orders:**
+
 ```json
 { "cxa": { "c": "BTC-USD" } }
 ```
@@ -326,9 +353,7 @@ Place, cancel, or modify orders. Requires Ed25519 signature.
   "response": {
     "type": "order",
     "data": {
-      "statuses": [
-        { "resting": { "oid": "<base58_hash>" } }
-      ]
+      "statuses": [{ "resting": { "oid": "<base58_hash>" } }]
     }
   }
 }
@@ -336,13 +361,13 @@ Place, cancel, or modify orders. Requires Ed25519 signature.
 
 **Status variants:**
 
-| Non-terminal | Terminal |
-|-------------|---------|
-| `resting` | `filled` |
-| `working` | `partiallyFilled` |
-| `triggered` | `cancelled`, `cancelledRiskLimit`, `cancelledSelfCrossing`, `cancelledReduceOnly`, `cancelledIoc` |
-| | `rejectedCrossing`, `rejectedDuplicate`, `rejectedRiskLimit`, `rejectedInvalid` |
-| | `siblingCancelled`, `triggerFailed`, `error` |
+| Non-terminal | Terminal                                                                                          |
+| ------------ | ------------------------------------------------------------------------------------------------- |
+| `resting`    | `filled`                                                                                          |
+| `working`    | `partiallyFilled`                                                                                 |
+| `triggered`  | `cancelled`, `cancelledRiskLimit`, `cancelledSelfCrossing`, `cancelledReduceOnly`, `cancelledIoc` |
+|              | `rejectedCrossing`, `rejectedDuplicate`, `rejectedRiskLimit`, `rejectedInvalid`                   |
+|              | `siblingCancelled`, `triggerFailed`, `error`                                                      |
 
 ---
 
@@ -377,25 +402,28 @@ Place, cancel, or modify orders. Requires Ed25519 signature.
 
 ### Update frequencies
 
-| Stream | Frequency |
-|--------|-----------|
-| `ticker` | 200ms |
-| `candle` | ~10–20s |
-| `trades` | Real-time |
-| `l2Snapshot` | 200ms |
-| `l2Delta` | Real-time |
-| `account` | Event-driven |
+| Stream       | Frequency    |
+| ------------ | ------------ |
+| `ticker`     | 200ms        |
+| `candle`     | ~10–20s      |
+| `trades`     | Real-time    |
+| `l2Snapshot` | 200ms        |
+| `l2Delta`    | Real-time    |
+| `account`    | Event-driven |
 
 ### Account stream
 
 Subscribe with one or multiple pubkeys:
+
 ```json
 {
   "method": "subscribe",
-  "subscription": [{
-    "type": "account",
-    "user": ["<pubkey1>", "<pubkey2>"]
-  }]
+  "subscription": [
+    {
+      "type": "account",
+      "user": ["<pubkey1>", "<pubkey2>"]
+    }
+  ]
 }
 ```
 
@@ -411,22 +439,26 @@ Order IDs are computed client-side. bulk-keychain computes them automatically:
 const signed = signer.sign(order);
 console.log(signed.orderId);
 ```
+
 ```python
 signed = signer.sign(order)
 print(signed.get("order_id"))
 ```
+
 ```rust
 let signed = signer.sign(order.into(), None)?;
 println!("{:?}", signed.order_id);
 ```
 
 **Formula:**
+
 ```
 base58( SHA256( seqno_le_u64 + bincode(single_action) + account_bytes_32 + nonce_le_u64 ) )
 ```
+
 - `seqno`: zero-based action index within the transaction (0 for single orders)
 - Signer pubkey is excluded from the hash
 
 ---
 
-*Resource maintained by [builtonbulk.xyz](https://builtonbulk.xyz)*
+_Resource maintained by [builtonbulk.xyz](https://builtonbulk.xyz)_
